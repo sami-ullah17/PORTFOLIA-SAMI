@@ -41,7 +41,6 @@ export function generateResumePdf(data: PortfolioData): jsPDF {
     data.personal.phone,
     data.personal.location,
     'GitHub: ' + data.personal.github.replace('https://', ''),
-    'LinkedIn: ' + data.personal.linkedin.replace('https://', ''),
   ].filter(Boolean);
 
   const contactLine = contactParts.join('  |  ');

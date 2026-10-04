@@ -5,7 +5,7 @@ export interface PersonalInfo {
   email: string;
   phone: string;
   location: string;
-  linkedin: string;
+  linkedin?: string;
   github: string;
   avatarUrl?: string | null;
 }

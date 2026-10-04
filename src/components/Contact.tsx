@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Mail, Phone, MapPin, Linkedin, Github, Send, Copy, Check, Edit3, ArrowUpRight } from 'lucide-react';
+import { Mail, Phone, MapPin, Github, Send, Copy, Check, Edit3, ArrowUpRight } from 'lucide-react';
 
 export const Contact: React.FC = () => {
   const { data, isAdmin, openEditModal } = usePortfolio();
@@ -146,42 +146,30 @@ export const Contact: React.FC = () => {
               <ArrowUpRight className="w-4 h-4 text-zinc-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors shrink-0" />
             </a>
 
-            {/* Social Links Cards */}
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <a
-                href={personal.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200/90 dark:border-zinc-800 shadow-xs flex items-center gap-3 group hover:border-teal-500/50 transition-colors"
-              >
-                <div className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-teal-600 dark:text-teal-400 shrink-0">
-                  <Linkedin className="w-4 h-4" />
-                </div>
-                <div className="min-w-0">
-                  <span className="block text-xs uppercase tracking-wider text-zinc-400 font-mono">Profile</span>
-                  <span className="font-semibold text-xs text-zinc-800 dark:text-zinc-200 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                    LinkedIn
-                  </span>
-                </div>
-              </a>
-
+            {/* GitHub Card */}
+            {personal.github && (
               <a
                 href={personal.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-200/90 dark:border-zinc-800 shadow-xs flex items-center gap-3 group hover:border-teal-500/50 transition-colors"
+                className="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-zinc-200/90 dark:border-zinc-800 shadow-xs flex items-center justify-between group hover:border-teal-500/50 transition-colors block"
               >
-                <div className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-teal-600 dark:text-teal-400 shrink-0">
-                  <Github className="w-4 h-4" />
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <div className="p-2.5 rounded-lg bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400 border border-teal-100 dark:border-teal-900/50 shrink-0">
+                    <Github className="w-4 h-4" />
+                  </div>
+                  <div className="truncate">
+                    <span className="block text-xs uppercase tracking-wider text-zinc-400 font-mono">
+                      Code Repositories
+                    </span>
+                    <span className="font-medium text-sm text-zinc-900 dark:text-zinc-100">
+                      github.com/sami-ullah17
+                    </span>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <span className="block text-xs uppercase tracking-wider text-zinc-400 font-mono">Code</span>
-                  <span className="font-semibold text-xs text-zinc-800 dark:text-zinc-200 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                    GitHub
-                  </span>
-                </div>
+                <ArrowUpRight className="w-4 h-4 text-zinc-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors shrink-0" />
               </a>
-            </div>
+            )}
           </div>
 
           {/* Right Column: Contact Form */}

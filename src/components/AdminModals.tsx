@@ -140,6 +140,13 @@ export const AdminModals: React.FC = () => {
 
     if (type === 'personal') {
       updatePersonal(formData);
+      if (formData.avatarUrl && formData.avatarUrl.startsWith('data:image/')) {
+        fetch('/api/save-photo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: formData.avatarUrl }),
+        }).catch(() => {});
+      }
     } else if (type === 'about') {
       updateAbout(formData.aboutText);
     } else if (type === 'education') {
@@ -483,25 +490,14 @@ export const AdminModals: React.FC = () => {
                     className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-900 dark:text-zinc-100"
                   />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">LinkedIn URL</label>
-                    <input
-                      type="url"
-                      value={formData.linkedin || ''}
-                      onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
-                      className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-900 dark:text-zinc-100"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">GitHub URL</label>
-                    <input
-                      type="url"
-                      value={formData.github || ''}
-                      onChange={(e) => setFormData({ ...formData, github: e.target.value })}
-                      className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-900 dark:text-zinc-100"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">GitHub URL</label>
+                  <input
+                    type="url"
+                    value={formData.github || ''}
+                    onChange={(e) => setFormData({ ...formData, github: e.target.value })}
+                    className="w-full px-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-900 dark:text-zinc-100"
+                  />
                 </div>
 
                 <div className="flex justify-end gap-2 pt-3 border-t border-zinc-100 dark:border-zinc-800">

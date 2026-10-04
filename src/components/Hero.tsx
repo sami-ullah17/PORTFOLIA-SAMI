@@ -1,11 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { downloadResume } from '../utils/resumeGenerator';
 import {
   ArrowDown,
   FileDown,
   Github,
-  Linkedin,
   MapPin,
   Mail,
   Camera,
@@ -21,6 +20,17 @@ export const Hero: React.FC = () => {
   const [uploadToast, setUploadToast] = useState(false);
   const directFileInputRef = useRef<HTMLInputElement>(null);
 
+  // Sync any uploaded base64 photo to server permanently
+  useEffect(() => {
+    if (personal.avatarUrl && personal.avatarUrl.startsWith('data:image/')) {
+      fetch('/api/save-photo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: personal.avatarUrl }),
+      }).catch(() => {});
+    }
+  }, [personal.avatarUrl]);
+
   const handleScrollToProjects = (e: React.MouseEvent) => {
     e.preventDefault();
     const projSection = document.querySelector('#projects');
@@ -34,7 +44,7 @@ export const Hero: React.FC = () => {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
       const base64 = reader.result as string;
       updatePersonal({
         ...personal,
@@ -43,6 +53,16 @@ export const Hero: React.FC = () => {
       setImageError(false);
       setUploadToast(true);
       setTimeout(() => setUploadToast(false), 5000);
+
+      try {
+        await fetch('/api/save-photo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: base64 }),
+        });
+      } catch (err) {
+        console.warn('Saved to localStorage, server sync failed:', err);
+      }
     };
     reader.readAsDataURL(file);
     e.target.value = '';
@@ -127,19 +147,6 @@ export const Hero: React.FC = () => {
               <span className="text-xs uppercase tracking-wider font-semibold text-zinc-400 dark:text-zinc-500 font-mono">
                 Connect
               </span>
-
-              {personal.linkedin && (
-                <a
-                  href={personal.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-                  aria-label="LinkedIn profile (opens in new tab)"
-                >
-                  <Linkedin className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                  <span className="hidden sm:inline">LinkedIn</span>
-                </a>
-              )}
 
               {personal.github && (
                 <a

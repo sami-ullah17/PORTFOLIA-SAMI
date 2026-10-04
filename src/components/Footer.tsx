@@ -1,6 +1,6 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Lock, Unlock, ArrowUp, Github, Linkedin, Mail } from 'lucide-react';
+import { Lock, Unlock, ArrowUp, Github, Mail } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const { data, isAdmin, openLoginModal, logoutAdmin } = usePortfolio();
@@ -39,17 +39,6 @@ export const Footer: React.FC = () => {
                 aria-label="GitHub profile"
               >
                 <Github className="w-4 h-4" />
-              </a>
-            )}
-            {data.personal.linkedin && (
-              <a
-                href={data.personal.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-                aria-label="LinkedIn profile"
-              >
-                <Linkedin className="w-4 h-4" />
               </a>
             )}
             {data.personal.email && (

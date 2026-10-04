@@ -8,7 +8,7 @@ export const DEFAULT_PORTFOLIO: PortfolioData = {
     email: 'samiullah1717sp@gmail.com',
     phone: '+92 329 1171812',
     location: 'Pakpattan, Pakistan',
-    linkedin: 'https://www.linkedin.com/in/sami-ullah-3834ab435/',
+    linkedin: '',
     github: 'https://github.com/sami-ullah17',
     avatarUrl: '/src/assets/images/sami_suit_portrait_1791027197219.jpg',
   },
