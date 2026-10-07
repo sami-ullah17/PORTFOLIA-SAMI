@@ -9,7 +9,7 @@ import {
 } from '../types/portfolio';
 import { DEFAULT_PORTFOLIO } from '../data/defaultPortfolio';
 
-const STORAGE_KEY = 'sami_portfolio_data_v3';
+const STORAGE_KEY = 'sami_portfolio_data_v4';
 const ADMIN_AUTH_KEY = 'sami_portfolio_admin_auth';
 const ADMIN_PW_KEY = 'sami_portfolio_admin_pw';
 const THEME_KEY = 'sami_portfolio_theme';

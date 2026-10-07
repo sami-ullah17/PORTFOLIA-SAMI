@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { downloadResume } from '../utils/resumeGenerator';
 import {
@@ -7,29 +7,14 @@ import {
   Github,
   MapPin,
   Mail,
-  Camera,
-  Upload,
-  Check,
+  Edit3,
 } from 'lucide-react';
 
 export const Hero: React.FC = () => {
-  const { data, isAdmin, openEditModal, updatePersonal } = usePortfolio();
+  const { data, isAdmin, openEditModal } = usePortfolio();
   const { personal, education } = data;
   const currentEdu = education[0];
   const [imageError, setImageError] = useState(false);
-  const [uploadToast, setUploadToast] = useState(false);
-  const directFileInputRef = useRef<HTMLInputElement>(null);
-
-  // Sync any uploaded base64 photo to server permanently
-  useEffect(() => {
-    if (personal.avatarUrl && personal.avatarUrl.startsWith('data:image/')) {
-      fetch('/api/save-photo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: personal.avatarUrl }),
-      }).catch(() => {});
-    }
-  }, [personal.avatarUrl]);
 
   const handleScrollToProjects = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -37,35 +22,6 @@ export const Hero: React.FC = () => {
     if (projSection) {
       projSection.scrollIntoView({ behavior: 'smooth' });
     }
-  };
-
-  const handleDirectPhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64 = reader.result as string;
-      updatePersonal({
-        ...personal,
-        avatarUrl: base64,
-      });
-      setImageError(false);
-      setUploadToast(true);
-      setTimeout(() => setUploadToast(false), 5000);
-
-      try {
-        await fetch('/api/save-photo', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ image: base64 }),
-        });
-      } catch (err) {
-        console.warn('Saved to localStorage, server sync failed:', err);
-      }
-    };
-    reader.readAsDataURL(file);
-    e.target.value = '';
   };
 
   return (
@@ -78,8 +34,8 @@ export const Hero: React.FC = () => {
               onClick={() => openEditModal('personal')}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-amber-900 dark:text-amber-200 bg-amber-100 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-800 rounded-md hover:bg-amber-200 transition-colors"
             >
-              <Camera className="w-3.5 h-3.5" />
-              <span>Change Photo & Details</span>
+              <Edit3 className="w-3.5 h-3.5" />
+              <span>Edit Profile Details</span>
             </button>
           </div>
         )}
@@ -177,7 +133,7 @@ export const Hero: React.FC = () => {
           {/* Profile Picture Frame (Col 4) */}
           <div className="lg:col-span-4 order-1 lg:order-2 flex flex-col items-start lg:items-end">
             <div className="relative group">
-              <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-64 lg:h-64 rounded-2xl overflow-hidden border-2 border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 shadow-md relative">
+              <div className="w-44 h-44 sm:w-52 sm:h-52 lg:w-64 lg:h-64 rounded-2xl overflow-hidden border-2 border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 shadow-md relative">
                 {personal.avatarUrl && !imageError ? (
                   <img
                     src={personal.avatarUrl}
@@ -196,17 +152,6 @@ export const Hero: React.FC = () => {
                     </span>
                   </div>
                 )}
-
-                {/* Direct Click to Upload on Avatar */}
-                <button
-                  onClick={() => directFileInputRef.current?.click()}
-                  className="absolute inset-0 bg-zinc-950/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white text-xs font-medium transition-opacity gap-1.5 cursor-pointer"
-                  title="Click to select your actual photo from device"
-                >
-                  <Camera className="w-6 h-6 text-teal-400" />
-                  <span className="font-semibold">Upload Photo</span>
-                  <span className="text-[10px] text-zinc-300">Tap to browse file</span>
-                </button>
               </div>
 
               {/* Status indicator on avatar */}
@@ -214,32 +159,6 @@ export const Hero: React.FC = () => {
                 <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
                 <span>Online</span>
               </div>
-            </div>
-
-            {/* Direct 1-Click Upload Button under Avatar */}
-            <div className="w-36 sm:w-44 lg:w-64 mt-3">
-              <input
-                ref={directFileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleDirectPhotoSelect}
-              />
-              <button
-                type="button"
-                onClick={() => directFileInputRef.current?.click()}
-                className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold text-zinc-800 dark:text-zinc-200 bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-xs transition-colors cursor-pointer"
-              >
-                <Upload className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-                <span>Upload Real Photo</span>
-              </button>
-
-              {uploadToast && (
-                <div className="mt-2 p-2 rounded-md bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800 text-[11px] text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5 animate-fadeIn">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>Real photo saved!</span>
-                </div>
-              )}
             </div>
           </div>
         </div>
