@@ -1,5 +1,6 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
+import { DEFAULT_AVATAR } from '../data/profileImage';
 import { GraduationCap, BookOpen, Award, Calendar, Edit3, Plus, Trash2 } from 'lucide-react';
 
 export const About: React.FC = () => {
@@ -47,18 +48,17 @@ export const About: React.FC = () => {
               {/* Author Photo & Identity Lockup */}
               <div className="flex items-center gap-4 mb-6 pb-6 border-b border-zinc-100 dark:border-zinc-800/80">
                 <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800 shrink-0 shadow-xs">
-                  {data.personal.avatarUrl ? (
-                    <img
-                      src={data.personal.avatarUrl}
-                      alt={data.personal.name}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover object-top"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center font-display font-bold text-sm text-zinc-600 dark:text-zinc-300">
-                      SU
-                    </div>
-                  )}
+                  <img
+                    src={data.personal.avatarUrl || DEFAULT_AVATAR}
+                    alt={data.personal.name}
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      if (e.currentTarget.src !== DEFAULT_AVATAR) {
+                        e.currentTarget.src = DEFAULT_AVATAR;
+                      }
+                    }}
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
                 <div>
                   <h4 className="font-display font-bold text-base text-zinc-900 dark:text-zinc-100">

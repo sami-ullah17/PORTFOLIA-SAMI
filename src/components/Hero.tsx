@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { downloadResume } from '../utils/resumeGenerator';
+import { DEFAULT_AVATAR } from '../data/profileImage';
 import {
   ArrowDown,
   FileDown,
@@ -15,6 +16,8 @@ export const Hero: React.FC = () => {
   const { personal, education } = data;
   const currentEdu = education[0];
   const [imageError, setImageError] = useState(false);
+
+  const displayAvatar = personal.avatarUrl || DEFAULT_AVATAR;
 
   const handleScrollToProjects = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -134,12 +137,18 @@ export const Hero: React.FC = () => {
           <div className="lg:col-span-4 order-1 lg:order-2 flex flex-col items-start lg:items-end">
             <div className="relative group">
               <div className="w-44 h-44 sm:w-52 sm:h-52 lg:w-64 lg:h-64 rounded-2xl overflow-hidden border-2 border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 shadow-md relative">
-                {personal.avatarUrl && !imageError ? (
+                {displayAvatar && !imageError ? (
                   <img
-                    src={personal.avatarUrl}
+                    src={displayAvatar}
                     alt={personal.name}
                     referrerPolicy="no-referrer"
-                    onError={() => setImageError(true)}
+                    onError={(e) => {
+                      if (e.currentTarget.src !== DEFAULT_AVATAR) {
+                        e.currentTarget.src = DEFAULT_AVATAR;
+                      } else {
+                        setImageError(true);
+                      }
+                    }}
                     className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (

@@ -1,4 +1,5 @@
 import { PortfolioData } from '../types/portfolio';
+import { DEFAULT_AVATAR } from './profileImage';
 
 export const DEFAULT_PORTFOLIO: PortfolioData = {
   personal: {
@@ -10,7 +11,7 @@ export const DEFAULT_PORTFOLIO: PortfolioData = {
     location: 'Pakpattan, Pakistan',
     linkedin: '',
     github: 'https://github.com/sami-ullah17',
-    avatarUrl: '/src/assets/images/sami_suit_portrait_1791027197219.jpg',
+    avatarUrl: DEFAULT_AVATAR,
   },
   aboutText:
     'Software Engineering student with a strong interest in Artificial Intelligence and software development. Completed Object-Oriented Programming (OOP), Data Structures and Algorithms (DSA), and file handling in Python. Currently learning SQL and database management to strengthen my technical skills. A quick learner with strong problem-solving abilities, eager to apply my knowledge, gain practical experience, and grow in a professional software development environment.',
@@ -89,26 +90,7 @@ export const DEFAULT_PORTFOLIO: PortfolioData = {
       ],
     },
   ],
-  projects: [
-    {
-      id: 'proj-1',
-      title: 'Student Record Management System',
-      description:
-        'A comprehensive console-based software system engineered in Python adhering to Object-Oriented principles. Features persistent local file handling for data records, robust user input sanitization, dynamic search by student identifier, and full CRUD record tracking.',
-      tags: ['Python', 'OOP', 'File Handling', 'CLI', 'Persistence'],
-      githubUrl: 'https://github.com/sami-ullah17/student-record-management',
-      category: 'Console Applications',
-    },
-    {
-      id: 'proj-2',
-      title: 'Algorithmic Task Scheduler & Organizer',
-      description:
-        'An algorithmic command-line utility implementing custom priority queues and sorting algorithms in pure Python. Enables task ranking, deadline calculation, and session persistence to text/binary files without external dependencies.',
-      tags: ['Python', 'DSA', 'Priority Queues', 'Algorithms', 'CLI'],
-      githubUrl: 'https://github.com/sami-ullah17/python-task-scheduler',
-      category: 'Algorithms & Utilities',
-    },
-  ],
+  projects: [],
   customResumePdf: null,
   customResumeName: null,
 };
