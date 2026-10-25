@@ -20,18 +20,21 @@ function savePhotoPlugin(): Plugin {
               if (image && typeof image === 'string' && image.startsWith('data:image/')) {
                 const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
                 const buffer = Buffer.from(base64Data, 'base64');
-                const publicDir = path.resolve(__dirname, 'public');
-                if (!fs.existsSync(publicDir)) {
-                  fs.mkdirSync(publicDir, { recursive: true });
+                const publicImagesDir = path.resolve(__dirname, 'public/images');
+                if (!fs.existsSync(publicImagesDir)) {
+                  fs.mkdirSync(publicImagesDir, { recursive: true });
                 }
-                const photoPath = path.join(publicDir, 'sami_profile_photo.jpg');
-                fs.writeFileSync(photoPath, buffer);
+                fs.writeFileSync(path.join(publicImagesDir, 'profile.jpg'), buffer);
+
+                const publicDir = path.resolve(__dirname, 'public');
+                fs.writeFileSync(path.join(publicDir, 'sami_profile_photo.jpg'), buffer);
 
                 // Also save into src/assets/images
                 const assetsImgDir = path.resolve(__dirname, 'src/assets/images');
                 if (!fs.existsSync(assetsImgDir)) {
                   fs.mkdirSync(assetsImgDir, { recursive: true });
                 }
+                fs.writeFileSync(path.join(assetsImgDir, 'profile.jpg'), buffer);
                 fs.writeFileSync(path.join(assetsImgDir, 'sami_profile_photo.jpg'), buffer);
 
                 // Update defaultPortfolio.ts default avatar
@@ -40,13 +43,13 @@ function savePhotoPlugin(): Plugin {
                   let content = fs.readFileSync(defaultPortfolioPath, 'utf-8');
                   content = content.replace(
                     /avatarUrl:\s*['"`][^'"`]+['"`]/,
-                    "avatarUrl: '/sami_profile_photo.jpg'"
+                    "avatarUrl: '/images/profile.jpg'"
                   );
                   fs.writeFileSync(defaultPortfolioPath, content, 'utf-8');
                 }
 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: true, path: '/sami_profile_photo.jpg' }));
+                res.end(JSON.stringify({ success: true, path: '/images/profile.jpg' }));
                 return;
               }
               res.writeHead(400, { 'Content-Type': 'application/json' });

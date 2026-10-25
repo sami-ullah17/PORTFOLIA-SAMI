@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { downloadResume } from '../utils/resumeGenerator';
-import { DEFAULT_AVATAR } from '../data/profileImage';
+import { DEFAULT_AVATAR, FALLBACK_AVATAR } from '../data/profileImage';
 import {
   ArrowDown,
   FileDown,
@@ -9,13 +9,17 @@ import {
   MapPin,
   Mail,
   Edit3,
+  Camera,
+  Check,
 } from 'lucide-react';
 
 export const Hero: React.FC = () => {
-  const { data, isAdmin, openEditModal } = usePortfolio();
+  const { data, isAdmin, openEditModal, updatePersonal } = usePortfolio();
   const { personal, education } = data;
   const currentEdu = education[0];
   const [imageError, setImageError] = useState(false);
+  const [uploadToast, setUploadToast] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const displayAvatar = personal.avatarUrl || DEFAULT_AVATAR;
 
@@ -25,6 +29,36 @@ export const Hero: React.FC = () => {
     if (projSection) {
       projSection.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result as string;
+      updatePersonal({
+        ...personal,
+        avatarUrl: base64,
+      });
+      setImageError(false);
+      setUploadToast(true);
+      setTimeout(() => setUploadToast(false), 5000);
+
+      // Persist permanently to public/images/profile.jpg via backend
+      try {
+        await fetch('/api/save-photo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: base64 }),
+        });
+      } catch (err) {
+        console.warn('Saved to localStorage, backend sync pending:', err);
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
   };
 
   return (
@@ -143,8 +177,8 @@ export const Hero: React.FC = () => {
                     alt={personal.name}
                     referrerPolicy="no-referrer"
                     onError={(e) => {
-                      if (e.currentTarget.src !== DEFAULT_AVATAR) {
-                        e.currentTarget.src = DEFAULT_AVATAR;
+                      if (e.currentTarget.src !== FALLBACK_AVATAR) {
+                        e.currentTarget.src = FALLBACK_AVATAR;
                       } else {
                         setImageError(true);
                       }
@@ -168,6 +202,33 @@ export const Hero: React.FC = () => {
                 <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
                 <span>Online</span>
               </div>
+            </div>
+
+            {/* Change Photo Button - Select from PC */}
+            <div className="w-44 sm:w-52 lg:w-64 mt-3">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handlePhotoSelect}
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-xs transition-colors cursor-pointer"
+                title="Select photo from C:\Users\SAMIULLAH\Pictures\New folder"
+              >
+                <Camera className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                <span>Change Photo (Select from PC)</span>
+              </button>
+
+              {uploadToast && (
+                <div className="mt-2 p-2 rounded-md bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800 text-[11px] text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>Photo saved permanently to public/images!</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

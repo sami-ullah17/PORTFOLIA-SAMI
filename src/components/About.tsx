@@ -1,6 +1,6 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { DEFAULT_AVATAR } from '../data/profileImage';
+import { DEFAULT_AVATAR, FALLBACK_AVATAR } from '../data/profileImage';
 import { GraduationCap, BookOpen, Award, Calendar, Edit3, Plus, Trash2 } from 'lucide-react';
 
 export const About: React.FC = () => {
@@ -53,8 +53,8 @@ export const About: React.FC = () => {
                     alt={data.personal.name}
                     referrerPolicy="no-referrer"
                     onError={(e) => {
-                      if (e.currentTarget.src !== DEFAULT_AVATAR) {
-                        e.currentTarget.src = DEFAULT_AVATAR;
+                      if (e.currentTarget.src !== FALLBACK_AVATAR) {
+                        e.currentTarget.src = FALLBACK_AVATAR;
                       }
                     }}
                     className="w-full h-full object-cover object-top"
